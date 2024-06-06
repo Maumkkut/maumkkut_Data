@@ -10,3 +10,4 @@ Git|@|[@address0](https://github.com/address0)
 ### Tech
 ### 실행 환경
 ### DB 설명
+![ERD](ERD_maumkkut.png)
