@@ -42,6 +42,7 @@ API_KEY = env('API_KEY')
 INSTALLED_APPS = [
     'createDB',
     'users',
+    'django_extensions',
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
