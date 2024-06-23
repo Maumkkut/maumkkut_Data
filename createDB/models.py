@@ -15,10 +15,6 @@ class Group_Members(models.Model):
   users = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
   group = models.ForeignKey(Groups, on_delete=models.CASCADE)
 
-class Routes(models.Model):
-  group = models.ForeignKey(Groups, on_delete=models.CASCADE)
-  route_name = models.CharField(max_length=20)
-
 # 국문관광지 데이터
 class Tours(models.Model):
   sigungucode = models.IntegerField()
@@ -36,3 +32,8 @@ class Tours(models.Model):
   tel = models.TextField(null=True)
   eventstartdate = models.DateTimeField(null=True)
   eventenddate = models.DateTimeField(null=True)
+
+class Routes(models.Model):
+  group = models.ForeignKey(Groups, on_delete=models.CASCADE)
+  route_name = models.CharField(max_length=20)
+  route_details = models.ManyToManyField(Tours, related_name='get_routes')
