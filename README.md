@@ -5,7 +5,7 @@
 ### Members
 팀원|신희진|주소영
 ---|---|---
-Git|@|[@address0](https://github.com/address0)
+Git|[Sini_jini](https://github.com/Sinijinii)|[@address0](https://github.com/address0)
 역할|추천 알고리즘 모델링(팀장)|DB 전처리
 ### Tech
 ### 실행 환경
