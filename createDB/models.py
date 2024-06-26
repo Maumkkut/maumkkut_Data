@@ -28,7 +28,7 @@ class Tours(models.Model):
   mapx = models.FloatField()
   mapy = models.FloatField()
   title = models.TextField(null=True)
-  zipcode = models.IntegerField(null=True)
+  zipcode = models.TextField(null=True)
   tel = models.TextField(null=True)
   eventstartdate = models.DateTimeField(null=True)
   eventenddate = models.DateTimeField(null=True)
