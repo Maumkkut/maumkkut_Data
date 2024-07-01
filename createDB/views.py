@@ -12,6 +12,7 @@ from .serializers import TourSerializer
 from .models import Groups, Group_Members, Tours, Routes
 from django.shortcuts import get_object_or_404, get_list_or_404
 from geopy.distance import geodesic
+import random
 
 # Create your views here.
 
