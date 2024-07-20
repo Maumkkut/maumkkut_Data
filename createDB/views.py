@@ -12,7 +12,7 @@ from .serializers import TourSerializer
 from .models import Groups, Group_Members, Tours, Routes
 from django.shortcuts import get_object_or_404, get_list_or_404
 from geopy.distance import geodesic
-
+from sklearn.metrics.pairwise import cosine_similarity
 # Create your views here.
 
 api_key = settings.API_KEY
@@ -421,98 +421,166 @@ def recommend_course_view(request):
 # 단체                                                 
 ###########################################################################################################
 
-# 각 단체 구성원의 중요도 리스트를 받아 중앙값을 계산
-def calculate_group_median(preferences):
-    preferences_array = np.array(preferences)
-    return np.median(preferences_array, axis=0).tolist()
+# 중요도를 기반으로 가중치 리스트 생성
+def create_weighted_list(preferences):
+    weighted_list = []
+    keywords = [
+        "힐링", "여유로움", "자연", "관람", "음식점", "모험", "액티비티", "사람 많은 곳", "쇼핑", "사진 촬영"
+    ]
+    for pref in preferences:
+        for i, weight in enumerate(pref):
+            weighted_list.extend([keywords[i]] * weight)
+    return weighted_list
 
+# 코사인 유사도 계산
+def calculate_cosine_similarity(group1, group2):
+    group1_vector = np.array([group1])
+    group2_vector = np.array([group2])
+    return cosine_similarity(group1_vector, group2_vector)[0][0]
 
-def recommend_group_course_view(request):
-    # 예시 단체 구성원 중요도 리스트
+# 유사한 그룹 찾기
+def find_similar_group(current_group_preferences, groups_data):
+    max_similarity = float('-inf')
+    most_similar_group = None
+
+    for group_data in groups_data:
+        group_preferences = group_data['preferences']
+        similarity = calculate_cosine_similarity(current_group_preferences, group_preferences)
+        if similarity > max_similarity:
+            max_similarity = similarity
+            most_similar_group = group_data
+
+    return most_similar_group
+
+@csrf_exempt
+def recommend_similar_group_view(request):
     group_preferences = [
         [5, 3, 4, 2, 1, 4, 3, 5, 2, 1],
         [4, 4, 3, 3, 2, 5, 4, 4, 3, 2],
         [5, 2, 4, 3, 1, 3, 4, 5, 2, 1]
     ]
-    region = "강릉시"  # 지역
+    region = "강릉시"
 
-    # 단체의 중앙값 계산
-    group_median_preferences = calculate_group_median(group_preferences)
-    print(f"Group Median Preferences: {group_median_preferences}")
+    current_group_weighted_list = create_weighted_list(group_preferences)
+    print(f"Current Group Weighted List: {current_group_weighted_list}")
 
-    # 중앙값을 바탕으로 유저 캐릭터 결정
-    character_name, character_description = recommend_character(group_median_preferences)
-    print(f"Determined Character: {character_name}, Description: {character_description}")
+    groups_data = list(Groups.objects.filter(region=region).values('id', 'preferences'))
+    for group_data in groups_data:
+        group_data['preferences'] = create_weighted_list(list(Group_Members.objects.filter(group_id=group_data['id']).values_list('importance_list', flat=True)))
 
-    # 유저 캐릭터 설정
-    user_preferences = {
-        "travel_character": character_name,
-        "relaxation": int(group_median_preferences[1]),  # 여유로움 인덱스: 1번
-        "food_importance": int(group_median_preferences[4])  # 음식점 인덱스: 4번
-    }
+    similar_group = find_similar_group(current_group_weighted_list, groups_data)
+    if not similar_group:
+        return JsonResponse({"error": "유사한 그룹을 찾을 수 없습니다."}, status=400)
 
-    travel_character = user_preferences["travel_character"]
-    relaxation = user_preferences["relaxation"]
-    food_importance = user_preferences["food_importance"]
-
-    # 캐릭터에 맞는 코스 정보 가져오기
-    course_info = get_tour_courses(travel_character)
-    if not course_info:
-        return JsonResponse({"error": "해당 캐릭터에 대한 코스 정보가 없습니다."}, status=400)
-
-    type_ids = course_info['type_ids']
-    cat3_list = course_info['cat3']
-    cat2_list = course_info['cat2']
-
-    sigungucode = region_codes.get(region)
-    if not sigungucode:
-        return JsonResponse({"error": "해당 지역에 대한 정보가 없습니다."}, status=400)
-
-    # 놀거리 데이터 가져오기
-    tour_courses = list(Tours.objects.filter(type_id__in=type_ids, sigungucode=sigungucode))
-    if not tour_courses:
-        return JsonResponse({"error": "해당 지역에 대한 정보가 없습니다."}, status=400)
-
-    # 종료된 행사/이벤트 제외
-    tour_courses = filter_ongoing_events(tour_courses)
-
-    # 계절에 맞는 코스 필터링
-    tour_courses = filter_seasonal_courses(tour_courses)
-
-    # 캐릭터 취향에 맞는 코스 필터링
-    tour_courses = filter_courses_by_preference(tour_courses, cat3_list, cat2_list)
-
-    # 시간대에 맞는 코스 필터링
-    morning_courses = filter_courses_by_time(tour_courses, "morning")
-    afternoon_courses = filter_courses_by_time(tour_courses, "afternoon")
-    evening_courses = filter_courses_by_time(tour_courses, "evening")
-    tour_courses = morning_courses + afternoon_courses + evening_courses
-
-    # 음식점 데이터 가져오기
-    food_courses = list(Tours.objects.filter(type_id=39, sigungucode=sigungucode))
-    if not food_courses:
-        return JsonResponse({"error": "해당 지역에 음식점 정보가 없습니다."}, status=400)
-
-    # 디버깅 정보 출력
-    print(f"Tours: {tour_courses}")
-    print(f"Foods: {food_courses}")
-
-    result = build_course_pattern(tour_courses, food_courses, relaxation, food_importance)
-
-    # 최종 추천 코스 출력
-    for course in result:
-        print(f"추천 코스: {course.title} ({course.addr1})")
-
-    # Tours 객체를 딕셔너리로 변환
-    tour_courses_list = [{"title": tour.title, "addr1": tour.addr1, "mapx": tour.mapx, "mapy": tour.mapy} for tour in tour_courses]
-    food_courses_list = [{"title": food.title, "addr1": food.addr1, "mapx": food.mapx, "mapy": food.mapy} for food in food_courses]
-    result_list = [{"title": course.title, "addr1": course.addr1, "mapx": course.mapx, "mapy": course.mapy} for course in result]
+    similar_group_id = similar_group['id']
+    similar_group_routes = list(Routes.objects.filter(group_id=similar_group_id).values())
 
     return JsonResponse({
-        "message": "추천 코스가 콘솔에 출력되었습니다.",
-        "character": character_name,
-        "character_description": character_description,
-        "tour_courses": tour_courses_list,
-        "food_courses": food_courses_list,
-        "filtered_courses": result_list
+        "message": "유사한 그룹의 여행 유형이 제공되었습니다.",
+        "similar_group_id": similar_group_id,
+        "similar_group_routes": similar_group_routes
     }, status=200)
+
+
+
+
+##################################################################################
+# 기존
+##################################################################################
+
+
+# # 각 단체 구성원의 중요도 리스트를 받아 중앙값을 계산
+# def calculate_group_median(preferences):
+#     preferences_array = np.array(preferences)
+#     return np.median(preferences_array, axis=0).tolist()
+
+
+# def recommend_group_course_view(request):
+#     # 예시 단체 구성원 중요도 리스트
+#     group_preferences = [
+#         {"user_id": 1, "travel_character": "힐링형 감자"},
+#         {"user_id": 2, "travel_character": "힐링형 감자"},
+#         {"user_id": 3, "travel_character": "도전형 인삼"}
+#     ]
+#     region = "강릉시"  # 지역
+
+#     # 단체의 중앙값 계산
+#     group_median_preferences = calculate_group_median(group_preferences)
+#     print(f"Group Median Preferences: {group_median_preferences}")
+
+#     # 중앙값을 바탕으로 유저 캐릭터 결정
+#     character_name, character_description = recommend_character(group_median_preferences)
+#     print(f"Determined Character: {character_name}, Description: {character_description}")
+
+#     # 유저 캐릭터 설정
+#     user_preferences = {
+#         "travel_character": character_name,
+#         "relaxation": int(group_median_preferences[1]),  # 여유로움 인덱스: 1번
+#         "food_importance": int(group_median_preferences[4])  # 음식점 인덱스: 4번
+#     }
+
+#     travel_character = user_preferences["travel_character"]
+#     relaxation = user_preferences["relaxation"]
+#     food_importance = user_preferences["food_importance"]
+
+#     # 캐릭터에 맞는 코스 정보 가져오기
+#     course_info = get_tour_courses(travel_character)
+#     if not course_info:
+#         return JsonResponse({"error": "해당 캐릭터에 대한 코스 정보가 없습니다."}, status=400)
+
+#     type_ids = course_info['type_ids']
+#     cat3_list = course_info['cat3']
+#     cat2_list = course_info['cat2']
+
+#     sigungucode = region_codes.get(region)
+#     if not sigungucode:
+#         return JsonResponse({"error": "해당 지역에 대한 정보가 없습니다."}, status=400)
+
+#     # 놀거리 데이터 가져오기
+#     tour_courses = list(Tours.objects.filter(type_id__in=type_ids, sigungucode=sigungucode))
+#     if not tour_courses:
+#         return JsonResponse({"error": "해당 지역에 대한 정보가 없습니다."}, status=400)
+
+#     # 종료된 행사/이벤트 제외
+#     tour_courses = filter_ongoing_events(tour_courses)
+
+#     # 계절에 맞는 코스 필터링
+#     tour_courses = filter_seasonal_courses(tour_courses)
+
+#     # 캐릭터 취향에 맞는 코스 필터링
+#     tour_courses = filter_courses_by_preference(tour_courses, cat3_list, cat2_list)
+
+#     # 시간대에 맞는 코스 필터링
+#     morning_courses = filter_courses_by_time(tour_courses, "morning")
+#     afternoon_courses = filter_courses_by_time(tour_courses, "afternoon")
+#     evening_courses = filter_courses_by_time(tour_courses, "evening")
+#     tour_courses = morning_courses + afternoon_courses + evening_courses
+
+#     # 음식점 데이터 가져오기
+#     food_courses = list(Tours.objects.filter(type_id=39, sigungucode=sigungucode))
+#     if not food_courses:
+#         return JsonResponse({"error": "해당 지역에 음식점 정보가 없습니다."}, status=400)
+
+#     # 디버깅 정보 출력
+#     print(f"Tours: {tour_courses}")
+#     print(f"Foods: {food_courses}")
+
+#     result = build_course_pattern(tour_courses, food_courses, relaxation, food_importance)
+
+#     # 최종 추천 코스 출력
+#     for course in result:
+#         print(f"추천 코스: {course.title} ({course.addr1})")
+
+#     # Tours 객체를 딕셔너리로 변환
+#     tour_courses_list = [{"title": tour.title, "addr1": tour.addr1, "mapx": tour.mapx, "mapy": tour.mapy} for tour in tour_courses]
+#     food_courses_list = [{"title": food.title, "addr1": food.addr1, "mapx": food.mapx, "mapy": food.mapy} for food in food_courses]
+#     result_list = [{"title": course.title, "addr1": course.addr1, "mapx": course.mapx, "mapy": course.mapy} for course in result]
+
+#     return JsonResponse({
+#         "message": "추천 코스가 콘솔에 출력되었습니다.",
+#         "character": character_name,
+#         "character_description": character_description,
+#         "tour_courses": tour_courses_list,
+#         "food_courses": food_courses_list,
+#         "filtered_courses": result_list
+#     }, status=200)
