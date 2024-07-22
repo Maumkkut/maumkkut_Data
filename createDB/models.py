@@ -20,11 +20,8 @@ class Tours(models.Model):
   tel = models.TextField(null=True)
   eventstartdate = models.DateTimeField(null=True)
   eventenddate = models.DateTimeField(null=True)
-
-class Routes(models.Model):
-  route_name = models.CharField(max_length=20)
-  route_locate = models.IntegerField()
-  route_details = models.ManyToManyField(Tours, related_name='get_routes')
+  tour_like = models.ManyToManyField(settings.AUTH_USER_MODEL, symmetrical=False, related_name='liked_tours')
+  tour_dislike = models.ManyToManyField(settings.AUTH_USER_MODEL, symmetrical=False, related_name='disliked_tours')
 
 class Groups(models.Model):
   users = models.ManyToManyField(
@@ -33,9 +30,25 @@ class Groups(models.Model):
   people_num = models.IntegerField()
   tour_type = models.CharField(max_length=10, null=True)
   group_name = models.CharField(max_length=20)
-  route = models.ForeignKey(Routes, on_delete=models.SET_NULL, null=True)
+
+class Routes_plan(models.Model):
+  route_name = models.CharField(max_length=20)
+  lodge = models.TextField()
+  route_area = models.IntegerField()
+  tour_startdate = models.DateTimeField(null=True, blank=True)
+  tour_enddate = models.DateTimeField(null=True, blank=True)
+  user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+  group = models.ForeignKey(Groups, on_delete=models.CASCADE, null=True, blank=True)
+  route_details = models.ManyToManyField(Tours, related_name='get_routes', through='Tour_plan_data')
+
 
 # 지금 상황에서는 중개 테이블이 필요 없지만, 나중에 추가 정보 저장 가능성을 위해 제작
+class Tour_plan_data(models.Model):
+  tour = models.ForeignKey(Tours, on_delete=models.CASCADE)
+  route = models.ForeignKey(Routes_plan, on_delete=models.CASCADE)
+
 class Group_Members(models.Model):
   users = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
   group = models.ForeignKey(Groups, on_delete=models.CASCADE)
+  liked_plans = models.ManyToManyField(Tour_plan_data, related_name='plan_like')
+  disliked_plans = models.ManyToManyField(Tour_plan_data, related_name='plan_dislike')

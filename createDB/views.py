@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 import requests
 from .serializers import TourSerializer
-from .models import Groups, Group_Members, Tours, Routes
+from .models import Groups, Group_Members, Tours, Routes_plan, Tour_plan_data
 from django.shortcuts import get_object_or_404, get_list_or_404
 from geopy.distance import geodesic
 from sklearn.metrics.pairwise import cosine_similarity
