@@ -13,8 +13,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:23:10.999Z",
-        "user_tour_type": "힐링형 감자",
+        "date_joined": "2024-07-23T00:11:25.937Z",
+        "user_age": 20,
+        "user_type": "힐링형 감자",
         "user_healing": 5,
         "user_relax": 5,
         "user_nature": 5,
@@ -24,7 +25,6 @@
         "user_people": 1,
         "user_shopping": 1,
         "user_photo": 2,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -42,8 +42,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:25:02.969Z",
-        "user_tour_type": "힐링형 감자",
+        "date_joined": "2024-07-23T00:11:34.393Z",
+        "user_age": 20,
+        "user_type": "힐링형 감자",
         "user_healing": 5,
         "user_relax": 5,
         "user_nature": 5,
@@ -53,7 +54,6 @@
         "user_people": 1,
         "user_shopping": 1,
         "user_photo": 2,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -71,8 +71,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:25:59.294Z",
-        "user_tour_type": "힐링형 감자",
+        "date_joined": "2024-07-23T00:11:40.925Z",
+        "user_age": 20,
+        "user_type": "힐링형 감자",
         "user_healing": 5,
         "user_relax": 5,
         "user_nature": 5,
@@ -82,7 +83,6 @@
         "user_people": 1,
         "user_shopping": 1,
         "user_photo": 2,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -100,8 +100,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:28:52.921Z",
-        "user_tour_type": "액티비티형 옥수수",
+        "date_joined": "2024-07-23T00:12:58.554Z",
+        "user_age": 21,
+        "user_type": "액티비티형 옥수수",
         "user_healing": 1,
         "user_relax": 2,
         "user_nature": 4,
@@ -111,7 +112,6 @@
         "user_people": 5,
         "user_shopping": 2,
         "user_photo": 4,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -129,8 +129,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:29:39.085Z",
-        "user_tour_type": "액티비티형 옥수수",
+        "date_joined": "2024-07-23T00:13:08.634Z",
+        "user_age": 25,
+        "user_type": "액티비티형 옥수수",
         "user_healing": 1,
         "user_relax": 2,
         "user_nature": 4,
@@ -140,7 +141,6 @@
         "user_people": 5,
         "user_shopping": 2,
         "user_photo": 4,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -158,8 +158,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:30:14.858Z",
-        "user_tour_type": "액티비티형 옥수수",
+        "date_joined": "2024-07-23T00:13:19.727Z",
+        "user_age": 20,
+        "user_type": "액티비티형 옥수수",
         "user_healing": 1,
         "user_relax": 2,
         "user_nature": 4,
@@ -169,7 +170,6 @@
         "user_people": 5,
         "user_shopping": 2,
         "user_photo": 4,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -187,8 +187,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:32:24.568Z",
-        "user_tour_type": "관람형 배추",
+        "date_joined": "2024-07-23T00:14:26.865Z",
+        "user_age": 23,
+        "user_type": "관람형 배추",
         "user_healing": 2,
         "user_relax": 3,
         "user_nature": 3,
@@ -198,7 +199,6 @@
         "user_people": 2,
         "user_shopping": 3,
         "user_photo": 4,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -216,8 +216,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:32:54.572Z",
-        "user_tour_type": "관람형 배추",
+        "date_joined": "2024-07-23T00:14:38.129Z",
+        "user_age": 27,
+        "user_type": "관람형 배추",
         "user_healing": 2,
         "user_relax": 3,
         "user_nature": 3,
@@ -227,7 +228,6 @@
         "user_people": 2,
         "user_shopping": 3,
         "user_photo": 4,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -245,8 +245,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:33:22.007Z",
-        "user_tour_type": "관람형 배추",
+        "date_joined": "2024-07-23T00:14:59.398Z",
+        "user_age": 24,
+        "user_type": "관람형 배추",
         "user_healing": 2,
         "user_relax": 3,
         "user_nature": 3,
@@ -256,7 +257,6 @@
         "user_people": 2,
         "user_shopping": 3,
         "user_photo": 4,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -274,8 +274,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:35:49.778Z",
-        "user_tour_type": "미식형 황태",
+        "date_joined": "2024-07-23T00:16:37.784Z",
+        "user_age": 30,
+        "user_type": "미식형 황태",
         "user_healing": 2,
         "user_relax": 4,
         "user_nature": 2,
@@ -285,7 +286,6 @@
         "user_people": 4,
         "user_shopping": 4,
         "user_photo": 3,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -303,8 +303,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:36:17.480Z",
-        "user_tour_type": "미식형 황태",
+        "date_joined": "2024-07-23T00:16:52.307Z",
+        "user_age": 25,
+        "user_type": "미식형 황태",
         "user_healing": 2,
         "user_relax": 4,
         "user_nature": 2,
@@ -314,7 +315,6 @@
         "user_people": 4,
         "user_shopping": 4,
         "user_photo": 3,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -332,8 +332,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:36:39.971Z",
-        "user_tour_type": "미식형 황태",
+        "date_joined": "2024-07-23T00:17:05.548Z",
+        "user_age": 31,
+        "user_type": "미식형 황태",
         "user_healing": 2,
         "user_relax": 4,
         "user_nature": 2,
@@ -343,7 +344,6 @@
         "user_people": 4,
         "user_shopping": 4,
         "user_photo": 3,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -361,8 +361,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:53:49.960Z",
-        "user_tour_type": "사람좋아 쌀알",
+        "date_joined": "2024-07-23T00:18:33.716Z",
+        "user_age": 20,
+        "user_type": "사람좋아 쌀알",
         "user_healing": 1,
         "user_relax": 2,
         "user_nature": 4,
@@ -372,7 +373,6 @@
         "user_people": 5,
         "user_shopping": 4,
         "user_photo": 4,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -390,8 +390,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:54:18.637Z",
-        "user_tour_type": "사람좋아 쌀알",
+        "date_joined": "2024-07-23T00:18:54.431Z",
+        "user_age": 21,
+        "user_type": "사람좋아 쌀알",
         "user_healing": 1,
         "user_relax": 2,
         "user_nature": 4,
@@ -401,7 +402,6 @@
         "user_people": 5,
         "user_shopping": 4,
         "user_photo": 4,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -419,8 +419,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:54:42.189Z",
-        "user_tour_type": "사람좋아 쌀알",
+        "date_joined": "2024-07-23T00:19:02.973Z",
+        "user_age": 21,
+        "user_type": "사람좋아 쌀알",
         "user_healing": 1,
         "user_relax": 2,
         "user_nature": 4,
@@ -430,7 +431,6 @@
         "user_people": 5,
         "user_shopping": 4,
         "user_photo": 4,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -448,8 +448,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:56:42.433Z",
-        "user_tour_type": "도전형 인삼",
+        "date_joined": "2024-07-23T00:22:38.595Z",
+        "user_age": 23,
+        "user_type": "도전형 인삼",
         "user_healing": 2,
         "user_relax": 3,
         "user_nature": 5,
@@ -459,7 +460,6 @@
         "user_people": 2,
         "user_shopping": 2,
         "user_photo": 4,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -477,8 +477,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:57:06.011Z",
-        "user_tour_type": "도전형 인삼",
+        "date_joined": "2024-07-23T00:22:50.531Z",
+        "user_age": 24,
+        "user_type": "도전형 인삼",
         "user_healing": 2,
         "user_relax": 3,
         "user_nature": 5,
@@ -488,7 +489,6 @@
         "user_people": 2,
         "user_shopping": 2,
         "user_photo": 4,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -506,8 +506,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:57:26.380Z",
-        "user_tour_type": "도전형 인삼",
+        "date_joined": "2024-07-23T00:23:00.796Z",
+        "user_age": 20,
+        "user_type": "도전형 인삼",
         "user_healing": 2,
         "user_relax": 3,
         "user_nature": 5,
@@ -517,7 +518,6 @@
         "user_people": 2,
         "user_shopping": 2,
         "user_photo": 4,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -535,8 +535,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:59:09.802Z",
-        "user_tour_type": "인플루언서형 복숭아",
+        "date_joined": "2024-07-23T00:24:14.510Z",
+        "user_age": 22,
+        "user_type": "인플루언서형 복숭아",
         "user_healing": 1,
         "user_relax": 2,
         "user_nature": 3,
@@ -546,7 +547,6 @@
         "user_people": 5,
         "user_shopping": 5,
         "user_photo": 4,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -564,8 +564,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T12:59:34.208Z",
-        "user_tour_type": "인플루언서형 복숭아",
+        "date_joined": "2024-07-23T00:24:25.657Z",
+        "user_age": 21,
+        "user_type": "인플루언서형 복숭아",
         "user_healing": 1,
         "user_relax": 2,
         "user_nature": 3,
@@ -575,7 +576,6 @@
         "user_people": 5,
         "user_shopping": 5,
         "user_photo": 4,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -593,8 +593,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T13:00:16.629Z",
-        "user_tour_type": "인플루언서형 복숭아",
+        "date_joined": "2024-07-23T00:24:35.663Z",
+        "user_age": 26,
+        "user_type": "인플루언서형 복숭아",
         "user_healing": 1,
         "user_relax": 2,
         "user_nature": 3,
@@ -604,7 +605,6 @@
         "user_people": 5,
         "user_shopping": 5,
         "user_photo": 4,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -622,8 +622,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T14:55:17.511Z",
-        "user_tour_type": "나무늘보형 순두부",
+        "date_joined": "2024-07-23T00:25:38.411Z",
+        "user_age": 28,
+        "user_type": "나무늘보형 순두부",
         "user_healing": 4,
         "user_relax": 5,
         "user_nature": 3,
@@ -633,7 +634,6 @@
         "user_people": 1,
         "user_shopping": 1,
         "user_photo": 2,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -651,8 +651,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T14:55:47.701Z",
-        "user_tour_type": "나무늘보형 순두부",
+        "date_joined": "2024-07-23T00:25:48.673Z",
+        "user_age": 24,
+        "user_type": "나무늘보형 순두부",
         "user_healing": 4,
         "user_relax": 5,
         "user_nature": 3,
@@ -662,7 +663,6 @@
         "user_people": 1,
         "user_shopping": 1,
         "user_photo": 2,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
@@ -680,8 +680,9 @@
         "email": "",
         "is_staff": false,
         "is_active": true,
-        "date_joined": "2024-06-30T14:56:52.850Z",
-        "user_tour_type": "나무늘보형 순두부",
+        "date_joined": "2024-07-23T00:25:59.473Z",
+        "user_age": 30,
+        "user_type": "나무늘보형 순두부",
         "user_healing": 4,
         "user_relax": 5,
         "user_nature": 3,
@@ -691,7 +692,6 @@
         "user_people": 1,
         "user_shopping": 1,
         "user_photo": 2,
-        "route": null,
         "groups": [],
         "user_permissions": []
     }
