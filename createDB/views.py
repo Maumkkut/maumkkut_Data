@@ -51,7 +51,9 @@ def fetch_and_save_tours(request):
     'MobileApp': 'TestApp',
     '_type': 'json'
   }
-  response = requests.get(URL, params=params).json()
+  response = requests.get(URL, params=params)
+  print(response)
+  response = response.json()
   tour_data = response.get("response").get("body").get("items").get("item")
 
   if tour_data:
@@ -60,6 +62,7 @@ def fetch_and_save_tours(request):
   else:
     return Response({"error": "저장할 데이터가 없습니다."}, status=status.HTTP_204_NO_CONTENT)
 
+@api_view(['GET'])
 def save_tours_to_db(tour_data):
   for tour in tour_data:
     # 중복 확인
@@ -83,6 +86,7 @@ def save_tours_to_db(tour_data):
         eventenddate=tour.get("eventenddate", None)
       )
       tour_instance.save()
+    #   return JsonResponse({"message": "데이터 저장 완료!"}, status=status.HTTP_201_CREATED)
 
 
 ###########################################################################################################
