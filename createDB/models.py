@@ -37,7 +37,6 @@ class Routes_plan(models.Model):
   route_area = models.IntegerField()
   tour_startdate = models.DateTimeField(null=True, blank=True)
   tour_enddate = models.DateTimeField(null=True, blank=True)
-  user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
   group = models.ForeignKey(Groups, on_delete=models.CASCADE, null=True, blank=True)
   route_details = models.ManyToManyField(Tours, related_name='get_routes', through='Tour_plan_data')
 
@@ -46,9 +45,8 @@ class Routes_plan(models.Model):
 class Tour_plan_data(models.Model):
   tour = models.ForeignKey(Tours, on_delete=models.CASCADE)
   route = models.ForeignKey(Routes_plan, on_delete=models.CASCADE)
+  tour_seq = models.IntegerField()
 
 class Group_Members(models.Model):
   users = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
   group = models.ForeignKey(Groups, on_delete=models.CASCADE)
-  liked_plans = models.ManyToManyField(Tour_plan_data, related_name='plan_like')
-  disliked_plans = models.ManyToManyField(Tour_plan_data, related_name='plan_dislike')
