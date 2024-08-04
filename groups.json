@@ -1,11 +1,10 @@
-('µµÀüÇü ÀÎ»ï', '»õ·Î¿î ½Ãµµ¸¦ Áñ±â¸ç ²÷ÀÓ¾øÀÌ µµÀüÇÏ´Â ¿©ÇàÀ» ¼±È£')
 [
 {
     "model": "createDB.groups",
     "pk": 1,
     "fields": {
         "people_num": 4,
-        "tour_type": "¾×Æ¼ºñÆ¼Çü ¿Á¼ö¼ö",
+        "tour_type": "ì•¡í‹°ë¹„í‹°í˜• ì˜¥ìˆ˜ìˆ˜",
         "group_name": "group1"
     }
 },
@@ -14,7 +13,7 @@
     "pk": 2,
     "fields": {
         "people_num": 4,
-        "tour_type": "»ç¶÷ÁÁ¾Æ ½Ò¾Ë",
+        "tour_type": "ì‚¬ëŒì¢‹ì•„ ìŒ€ì•Œ",
         "group_name": "group2"
     }
 },
@@ -23,7 +22,7 @@
     "pk": 3,
     "fields": {
         "people_num": 4,
-        "tour_type": "Èú¸µÇü °¨ÀÚ",
+        "tour_type": "íë§í˜• ê°ì",
         "group_name": "group3"
     }
 },
@@ -32,7 +31,7 @@
     "pk": 4,
     "fields": {
         "people_num": 4,
-        "tour_type": "°ü¶÷Çü ¹èÃß",
+        "tour_type": "ê´€ëŒí˜• ë°°ì¶”",
         "group_name": "group4"
     }
 },
@@ -41,7 +40,7 @@
     "pk": 5,
     "fields": {
         "people_num": 4,
-        "tour_type": "µµÀüÇü ÀÎ»ï",
+        "tour_type": "ë„ì „í˜• ì¸ì‚¼",
         "group_name": "group5"
     }
 },
@@ -50,7 +49,7 @@
     "pk": 6,
     "fields": {
         "people_num": 4,
-        "tour_type": "¹Ì½ÄÇü È²ÅÂ",
+        "tour_type": "ë¯¸ì‹í˜• í™©íƒœ",
         "group_name": "group6"
     }
 }

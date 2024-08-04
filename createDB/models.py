@@ -20,8 +20,7 @@ class Tours(models.Model):
   tel = models.TextField(null=True)
   eventstartdate = models.DateTimeField(null=True)
   eventenddate = models.DateTimeField(null=True)
-  tour_like = models.ManyToManyField(settings.AUTH_USER_MODEL, symmetrical=False, related_name='liked_tours')
-  tour_dislike = models.ManyToManyField(settings.AUTH_USER_MODEL, symmetrical=False, related_name='disliked_tours')
+  
 
 class Groups(models.Model):
   users = models.ManyToManyField(
