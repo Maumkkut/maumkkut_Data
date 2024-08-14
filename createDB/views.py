@@ -2,6 +2,7 @@ from datetime import datetime
 import numpy as np
 from django.shortcuts import render
 from django.conf import settings
+from django.core import serializers
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
@@ -13,6 +14,8 @@ from .models import Groups, Group_Members, Tours, Routes_plan, Tour_plan_data
 from django.shortcuts import get_object_or_404, get_list_or_404
 from geopy.distance import geodesic
 from sklearn.metrics.pairwise import cosine_similarity
+import json
+import random
 # Create your views here.
 
 api_key = settings.API_KEY
@@ -42,6 +45,7 @@ def save_tour_12(request):
 @api_view(['GET'])
 def fetch_and_save_tours(request):
   URL = BASE_URL
+  print('API_KEY:', api_key)
   params = {
     'serviceKey': api_key,
     "areaCode": "32",  # 강원도 코드
@@ -53,6 +57,9 @@ def fetch_and_save_tours(request):
   }
   response = requests.get(URL, params=params)
   print(response)
+  response.raise_for_status()  # HTTP 오류가 발생했는지 확인
+  print("Response status code:", response.status_code)
+  print("Response text:", response.text)
   response = response.json()
   tour_data = response.get("response").get("body").get("items").get("item")
 
@@ -87,6 +94,14 @@ def save_tours_to_db(tour_data):
       )
       tour_instance.save()
     #   return JsonResponse({"message": "데이터 저장 완료!"}, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET'])
+def random_tour(request):
+    tour_data = Tours.objects.all()
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
 
 
 ###########################################################################################################

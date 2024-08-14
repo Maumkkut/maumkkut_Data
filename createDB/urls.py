@@ -7,4 +7,5 @@ urlpatterns = [
   path('save_tours_to_db/',views.save_tours_to_db, name="save_tours_to_db"),
   path('recommend-course/', views.recommend_course_view, name='recommend-course'),
   # path('recommend-group-course/', views.recommend_group_course_view, name='recommend-group-course'),
+  path('random-tour/', views.random_tour, name='random-tour'),
 ]
