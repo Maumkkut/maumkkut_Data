@@ -16,6 +16,7 @@ from geopy.distance import geodesic
 from sklearn.metrics.pairwise import cosine_similarity
 import json
 import random
+from django.db.models import Q
 # Create your views here.
 
 api_key = settings.API_KEY
@@ -104,13 +105,172 @@ def random_tour(request):
     return JsonResponse({'result': random_data_json})
 
 @api_view(['GET'])
-def routes_healing(request, areacode):
-    tour_data = Tours.objects.filter(sigungucode=areacode)
+def routes_healing(request, areacode, route_pk):
+    tour_data = Tours.objects.filter(
+        sigungucode=areacode
+    ).filter(
+        Q(cat2='A0101') | Q(cat3='A02010800') | Q(cat3='A02020300') | Q(cat3='A02020600') | Q(cat3='A02020700') | Q(cat3='A03030500') | Q(cat3='A03030600') | Q(cat3='A02010800')
+    )
     random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    routes_plan = Routes_plan.objects.get(pk=route_pk)
+    tour_seq = 1
+    
+    for tour in random_tour_data:
+        Tour_plan_data.objects.create(
+            tour=tour,
+            route=routes_plan,
+            tour_seq=tour_seq
+        )
+        tour_seq += 1
     random_data_json = json.loads(serializers.serialize('json', random_tour_data))
     return JsonResponse({'result': random_data_json})
 
+@api_view(['GET'])
+def routes_activity(request, areacode, route_pk):
+    tour_data = Tours.objects.filter(
+        sigungucode=areacode
+    ).filter(
+        Q(cat1='A03') | Q(cat3='A02020400') | Q(cat3='A02020500')
+    )
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    routes_plan = Routes_plan.objects.get(pk=route_pk)
+    tour_seq = 1
+    
+    for tour in random_tour_data:
+        Tour_plan_data.objects.create(
+            tour=tour,
+            route=routes_plan,
+            tour_seq=tour_seq
+        )
+        tour_seq += 1
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
 
+@api_view(['GET'])
+def routes_exhibit(request, areacode, route_pk):
+    tour_data = Tours.objects.filter(
+        sigungucode=areacode
+    ).filter(
+        Q(cat2='A0201') | Q(cat3='A02030200') | Q(cat3='A02030300') | Q(cat3='A02050200') | Q(cat3='A02060100') | Q(cat3='A02060200') | Q(cat3='A02060300') | Q(cat3='A02060500') | Q(cat3='A04010700')
+    )
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    routes_plan = Routes_plan.objects.get(pk=route_pk)
+    tour_seq = 1
+    
+    for tour in random_tour_data:
+        Tour_plan_data.objects.create(
+            tour=tour,
+            route=routes_plan,
+            tour_seq=tour_seq
+        )
+        tour_seq += 1
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+@api_view(['GET'])
+def routes_food(request, areacode, route_pk):
+    tour_data = Tours.objects.filter(
+        sigungucode=areacode
+    ).filter(
+        Q(cat3='A05020700') | Q(cat3='A05020900') | Q(cat3='A04010100') | Q(cat3='A04010200') | Q(cat3='A02030100') | Q(cat3='A02040600')
+    )
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    routes_plan = Routes_plan.objects.get(pk=route_pk)
+    tour_seq = 1
+    
+    for tour in random_tour_data:
+        Tour_plan_data.objects.create(
+            tour=tour,
+            route=routes_plan,
+            tour_seq=tour_seq
+        )
+        tour_seq += 1
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+@api_view(['GET'])
+def routes_people(request, areacode, route_pk):
+    tour_data = Tours.objects.filter(
+        sigungucode=areacode
+    ).filter(
+        Q(cat3='A01011200') | Q(cat3='A02020400') | Q(cat3='A02020600') | Q(cat3='A02020800') | Q(cat3='A02030600') | Q(cat3='A02060400') | Q(cat3='A03021200') | Q(cat3='A03021400') | Q(cat3='A03030800')
+    )
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    routes_plan = Routes_plan.objects.get(pk=route_pk)
+    tour_seq = 1
+    
+    for tour in random_tour_data:
+        Tour_plan_data.objects.create(
+            tour=tour,
+            route=routes_plan,
+            tour_seq=tour_seq
+        )
+        tour_seq += 1
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+@api_view(['GET'])
+def routes_experience(request, areacode, route_pk):
+    tour_data = Tours.objects.filter(
+        sigungucode=areacode
+    ).filter(
+        Q(cat2='A0203') | Q(cat3='A02020200') | Q(cat3='A02020600') | Q(cat3='A03021800') | Q(cat3='A03022400') | Q(cat3='A03030200') | Q(cat3='A03030400') | Q(cat3='A03040300') | Q(cat3='A03040400')
+    )
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    routes_plan = Routes_plan.objects.get(pk=route_pk)
+    tour_seq = 1
+    
+    for tour in random_tour_data:
+        Tour_plan_data.objects.create(
+            tour=tour,
+            route=routes_plan,
+            tour_seq=tour_seq
+        )
+        tour_seq += 1
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+@api_view(['GET'])
+def routes_influencer(request, areacode, route_pk):
+    tour_data = Tours.objects.filter(
+        sigungucode=areacode
+    ).filter(
+        Q(cat3='A01011200') | Q(cat3='A02020800') | Q(cat3='A02030600') | Q(cat3='A02050200') | Q(cat3='A02050600') | Q(cat3='A02060100') | Q(cat3='A02060200') | Q(cat3='A02060300') | Q(cat3='A02060400') | Q(cat3='A02060500')
+    )
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    routes_plan = Routes_plan.objects.get(pk=route_pk)
+    tour_seq = 1
+    
+    for tour in random_tour_data:
+        Tour_plan_data.objects.create(
+            tour=tour,
+            route=routes_plan,
+            tour_seq=tour_seq
+        )
+        tour_seq += 1
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+@api_view(['GET'])
+def routes_relax(request, areacode, route_pk):
+    tour_data = Tours.objects.filter(
+        sigungucode=areacode
+    ).filter(
+        Q(cat2='A0201') | Q(cat2='A0202') | Q(cat2='A0203') | Q(cat3='A05020900')
+    )
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 2))
+    routes_plan = Routes_plan.objects.get(pk=route_pk)
+    tour_seq = 1
+    
+    for tour in random_tour_data:
+        Tour_plan_data.objects.create(
+            tour=tour,
+            route=routes_plan,
+            tour_seq=tour_seq
+        )
+        tour_seq += 1
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
 
 ###########################################################################################################
 # 여행 캐릭터 유형                                                       
