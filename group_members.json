@@ -190,5 +190,69 @@
         "users": 24,
         "group": 6
     }
+},
+{
+    "model": "createDB.group_members",
+    "pk": 27,
+    "fields": {
+        "users": 19,
+        "group": 7
+    }
+},
+{
+    "model": "createDB.group_members",
+    "pk": 28,
+    "fields": {
+        "users": 20,
+        "group": 7
+    }
+},
+{
+    "model": "createDB.group_members",
+    "pk": 29,
+    "fields": {
+        "users": 21,
+        "group": 7
+    }
+},
+{
+    "model": "createDB.group_members",
+    "pk": 30,
+    "fields": {
+        "users": 15,
+        "group": 7
+    }
+},
+{
+    "model": "createDB.group_members",
+    "pk": 31,
+    "fields": {
+        "users": 22,
+        "group": 8
+    }
+},
+{
+    "model": "createDB.group_members",
+    "pk": 32,
+    "fields": {
+        "users": 23,
+        "group": 8
+    }
+},
+{
+    "model": "createDB.group_members",
+    "pk": 33,
+    "fields": {
+        "users": 24,
+        "group": 8
+    }
+},
+{
+    "model": "createDB.group_members",
+    "pk": 34,
+    "fields": {
+        "users": 9,
+        "group": 8
+    }
 }
 ]

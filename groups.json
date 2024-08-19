@@ -52,5 +52,23 @@
         "tour_type": "미식형 황태",
         "group_name": "group6"
     }
+},
+{
+    "model": "createDB.groups",
+    "pk": 7,
+    "fields": {
+        "people_num": 4,
+        "tour_type": "인플루언서형 복숭아",
+        "group_name": "group7"
+    }
+},
+{
+    "model": "createDB.groups",
+    "pk": 8,
+    "fields": {
+        "people_num": 4,
+        "tour_type": "나무늘보형 순두부",
+        "group_name": "group8"
+    }
 }
 ]

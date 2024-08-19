@@ -103,6 +103,14 @@ def random_tour(request):
     random_data_json = json.loads(serializers.serialize('json', random_tour_data))
     return JsonResponse({'result': random_data_json})
 
+@api_view(['GET'])
+def routes_healing(request, areacode):
+    tour_data = Tours.objects.filter(sigungucode=areacode)
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+
 
 ###########################################################################################################
 # 여행 캐릭터 유형                                                       
