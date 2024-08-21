@@ -276,12 +276,80 @@ def routes_relax(request, areacode, route_pk):
     random_data_json = json.loads(serializers.serialize('json', random_tour_data))
     return JsonResponse({'result': random_data_json})
 
+##################################################################################################
+# 랜덤 관광지 추천받는 함수
+##################################################################################
+
+@api_view(['GET'])
+def get_tours_by_area(request, areacode):
+    tour_data = Tours.objects.filter(sigungucode=areacode)
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+@api_view(['GET'])
+def get_tours_by_tour_type(request, areacode, tour_type):
+    if tour_type == '힐링형 감자':
+        tour_data = Tours.objects.filter(
+        sigungucode=areacode
+        ).filter(
+            Q(cat2='A0101') | Q(cat3='A02010800') | Q(cat3='A02020300') | Q(cat3='A02020600') | Q(cat3='A02020700') | Q(cat3='A03030500') | Q(cat3='A03030600') | Q(cat3='A02010800')
+        )
+    elif tour_type == '액티비티형 옥수수':
+        tour_data = Tours.objects.filter(
+        sigungucode=areacode
+        ).filter(
+            Q(cat1='A03') | Q(cat3='A02020400') | Q(cat3='A02020500')
+        )
+    elif tour_type == '관람형 배추':
+        tour_data = Tours.objects.filter(
+        sigungucode=areacode
+        ).filter(
+            Q(cat2='A0201') | Q(cat3='A02030200') | Q(cat3='A02030300') | Q(cat3='A02050200') | Q(cat3='A02060100') | Q(cat3='A02060200') | Q(cat3='A02060300') | Q(cat3='A02060500') | Q(cat3='A04010700')
+        )
+    elif tour_type == '미식형 황태':
+        tour_data = Tours.objects.filter(
+        sigungucode=areacode
+        ).filter(
+            Q(cat3='A05020700') | Q(cat3='A05020900') | Q(cat3='A04010100') | Q(cat3='A04010200') | Q(cat3='A02030100') | Q(cat3='A02040600')
+        )
+    elif tour_type == '사람좋아 쌀알':
+        tour_data = Tours.objects.filter(
+        sigungucode=areacode
+        ).filter(
+            Q(cat3='A01011200') | Q(cat3='A02020400') | Q(cat3='A02020600') | Q(cat3='A02020800') | Q(cat3='A02030600') | Q(cat3='A02060400') | Q(cat3='A03021200') | Q(cat3='A03021400') | Q(cat3='A03030800')
+        )
+    elif tour_type == '도전형 인삼':
+        tour_data = Tours.objects.filter(
+        sigungucode=areacode
+        ).filter(
+            Q(cat2='A0203') | Q(cat3='A02020200') | Q(cat3='A02020600') | Q(cat3='A03021800') | Q(cat3='A03022400') | Q(cat3='A03030200') | Q(cat3='A03030400') | Q(cat3='A03040300') | Q(cat3='A03040400')
+        )
+    elif tour_type == '인플루언서형 복숭아':
+        tour_data = Tours.objects.filter(
+        sigungucode=areacode
+        ).filter(
+            Q(cat3='A01011200') | Q(cat3='A02020800') | Q(cat3='A02030600') | Q(cat3='A02050200') | Q(cat3='A02050600') | Q(cat3='A02060100') | Q(cat3='A02060200') | Q(cat3='A02060300') | Q(cat3='A02060400') | Q(cat3='A02060500')
+        )
+    elif tour_type == '나무늘보형 순두부':
+        tour_data = Tours.objects.filter(
+        sigungucode=areacode
+        ).filter(
+            Q(cat2='A0201') | Q(cat2='A0202') | Q(cat2='A0203') | Q(cat3='A05020900')
+        )
+    else:
+        return JsonResponse({'result': '여행 유형 입력이 올바르지 않습니다.'})
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+
 ##########################################################################
 # 관광지 루트 조회 함수
 ####################################################################################
 
 @api_view(['GET'])
-def get_tour_plan_data_by_route(request, route_pk):
+def get_routes_data_by_route(request, route_pk):
     route = Routes_plan.objects.get(pk=route_pk)
     tour_plan_data = Tour_plan_data.objects.filter(route=route)
     results = []
@@ -317,8 +385,8 @@ def get_tour_plan_data_by_route(request, route_pk):
     return JsonResponse({'result': results}, json_dumps_params={'ensure_ascii': False, 'indent': 4})
 
 @api_view(['GET'])
-def get_tours_by_route_area(request, route_area):
-    filtered_routes = Routes_plan.objects.filter(route_area=route_area)
+def get_routes_by_route_area(request, areacode):
+    filtered_routes = Routes_plan.objects.filter(route_area=areacode)
     tour_plan_data = Tour_plan_data.objects.filter(route__in=filtered_routes).select_related('tour').prefetch_related('route')
     results = []
     
@@ -362,7 +430,7 @@ def get_tours_by_route_area(request, route_area):
     return JsonResponse({'result': results}, json_dumps_params={'ensure_ascii': False, 'indent': 4})
 
 @api_view(['GET'])
-def get_tours_by_tour_type(request, tour_type):
+def get_routes_by_tour_type(request, tour_type):
     groups = Groups.objects.filter(tour_type=tour_type)
     filtered_routes = Routes_plan.objects.filter(group__in=groups)
     
@@ -409,9 +477,9 @@ def get_tours_by_tour_type(request, tour_type):
     return JsonResponse({'result': results}, json_dumps_params={'ensure_ascii': False, 'indent': 4})
 
 @api_view(['GET'])
-def get_tours_by_tour_type_area(request, route_area, tour_type):
+def get_routes_by_tour_type_area(request, areacode, tour_type):
     groups = Groups.objects.filter(tour_type=tour_type)
-    filtered_routes = Routes_plan.objects.filter(group__in=groups, route_area=route_area)
+    filtered_routes = Routes_plan.objects.filter(group__in=groups, route_area=areacode)
     
     tour_plan_data = Tour_plan_data.objects.filter(route__in=filtered_routes).select_related('tour').prefetch_related('route')
     results = []
