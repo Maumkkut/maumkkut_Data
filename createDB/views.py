@@ -2,6 +2,7 @@ from datetime import datetime
 import numpy as np
 from django.shortcuts import render
 from django.conf import settings
+from django.core import serializers
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
@@ -9,10 +10,13 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 import requests
 from .serializers import TourSerializer
-from .models import Groups, Group_Members, Tours, Routes
+from .models import Groups, Group_Members, Tours, Routes_plan, Tour_plan_data
 from django.shortcuts import get_object_or_404, get_list_or_404
 from geopy.distance import geodesic
 from sklearn.metrics.pairwise import cosine_similarity
+import json
+import random
+from django.db.models import Q
 # Create your views here.
 
 api_key = settings.API_KEY
@@ -42,6 +46,7 @@ def save_tour_12(request):
 @api_view(['GET'])
 def fetch_and_save_tours(request):
   URL = BASE_URL
+  print('API_KEY:', api_key)
   params = {
     'serviceKey': api_key,
     "areaCode": "32",  # 강원도 코드
@@ -51,7 +56,12 @@ def fetch_and_save_tours(request):
     'MobileApp': 'TestApp',
     '_type': 'json'
   }
-  response = requests.get(URL, params=params).json()
+  response = requests.get(URL, params=params)
+  print(response)
+  response.raise_for_status()  # HTTP 오류가 발생했는지 확인
+  print("Response status code:", response.status_code)
+  print("Response text:", response.text)
+  response = response.json()
   tour_data = response.get("response").get("body").get("items").get("item")
 
   if tour_data:
@@ -60,6 +70,7 @@ def fetch_and_save_tours(request):
   else:
     return Response({"error": "저장할 데이터가 없습니다."}, status=status.HTTP_204_NO_CONTENT)
 
+@api_view(['GET'])
 def save_tours_to_db(tour_data):
   for tour in tour_data:
     # 중복 확인
@@ -83,7 +94,434 @@ def save_tours_to_db(tour_data):
         eventenddate=tour.get("eventenddate", None)
       )
       tour_instance.save()
+    #   return JsonResponse({"message": "데이터 저장 완료!"}, status=status.HTTP_201_CREATED)
 
+
+@api_view(['GET'])
+def random_tour(request):
+    tour_data = Tours.objects.all()
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+##############################################################
+# 관광지 유형별 루트 데이터 저장 함수
+#############################################################################
+
+@api_view(['GET'])
+def routes_healing(request, areacode, route_pk):
+    tour_data = Tours.objects.filter(
+        sigungucode=areacode
+    ).filter(
+        Q(cat2='A0101') | Q(cat3='A02010800') | Q(cat3='A02020300') | Q(cat3='A02020600') | Q(cat3='A02020700') | Q(cat3='A03030500') | Q(cat3='A03030600') | Q(cat3='A02010800')
+    )
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    routes_plan = Routes_plan.objects.get(pk=route_pk)
+    tour_seq = 1
+    
+    for tour in random_tour_data:
+        Tour_plan_data.objects.create(
+            tour=tour,
+            route=routes_plan,
+            tour_seq=tour_seq
+        )
+        tour_seq += 1
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+@api_view(['GET'])
+def routes_activity(request, areacode, route_pk):
+    tour_data = Tours.objects.filter(
+        sigungucode=areacode
+    ).filter(
+        Q(cat1='A03') | Q(cat3='A02020400') | Q(cat3='A02020500')
+    )
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    routes_plan = Routes_plan.objects.get(pk=route_pk)
+    tour_seq = 1
+    
+    for tour in random_tour_data:
+        Tour_plan_data.objects.create(
+            tour=tour,
+            route=routes_plan,
+            tour_seq=tour_seq
+        )
+        tour_seq += 1
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+@api_view(['GET'])
+def routes_exhibit(request, areacode, route_pk):
+    tour_data = Tours.objects.filter(
+        sigungucode=areacode
+    ).filter(
+        Q(cat2='A0201') | Q(cat3='A02030200') | Q(cat3='A02030300') | Q(cat3='A02050200') | Q(cat3='A02060100') | Q(cat3='A02060200') | Q(cat3='A02060300') | Q(cat3='A02060500') | Q(cat3='A04010700')
+    )
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    routes_plan = Routes_plan.objects.get(pk=route_pk)
+    tour_seq = 1
+    
+    for tour in random_tour_data:
+        Tour_plan_data.objects.create(
+            tour=tour,
+            route=routes_plan,
+            tour_seq=tour_seq
+        )
+        tour_seq += 1
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+@api_view(['GET'])
+def routes_food(request, areacode, route_pk):
+    tour_data = Tours.objects.filter(
+        sigungucode=areacode
+    ).filter(
+        Q(cat3='A05020700') | Q(cat3='A05020900') | Q(cat3='A04010100') | Q(cat3='A04010200') | Q(cat3='A02030100') | Q(cat3='A02040600')
+    )
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    routes_plan = Routes_plan.objects.get(pk=route_pk)
+    tour_seq = 1
+    
+    for tour in random_tour_data:
+        Tour_plan_data.objects.create(
+            tour=tour,
+            route=routes_plan,
+            tour_seq=tour_seq
+        )
+        tour_seq += 1
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+@api_view(['GET'])
+def routes_people(request, areacode, route_pk):
+    tour_data = Tours.objects.filter(
+        sigungucode=areacode
+    ).filter(
+        Q(cat3='A01011200') | Q(cat3='A02020400') | Q(cat3='A02020600') | Q(cat3='A02020800') | Q(cat3='A02030600') | Q(cat3='A02060400') | Q(cat3='A03021200') | Q(cat3='A03021400') | Q(cat3='A03030800')
+    )
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    routes_plan = Routes_plan.objects.get(pk=route_pk)
+    tour_seq = 1
+    
+    for tour in random_tour_data:
+        Tour_plan_data.objects.create(
+            tour=tour,
+            route=routes_plan,
+            tour_seq=tour_seq
+        )
+        tour_seq += 1
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+@api_view(['GET'])
+def routes_experience(request, areacode, route_pk):
+    tour_data = Tours.objects.filter(
+        sigungucode=areacode
+    ).filter(
+        Q(cat2='A0203') | Q(cat3='A02020200') | Q(cat3='A02020600') | Q(cat3='A03021800') | Q(cat3='A03022400') | Q(cat3='A03030200') | Q(cat3='A03030400') | Q(cat3='A03040300') | Q(cat3='A03040400')
+    )
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    routes_plan = Routes_plan.objects.get(pk=route_pk)
+    tour_seq = 1
+    
+    for tour in random_tour_data:
+        Tour_plan_data.objects.create(
+            tour=tour,
+            route=routes_plan,
+            tour_seq=tour_seq
+        )
+        tour_seq += 1
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+@api_view(['GET'])
+def routes_influencer(request, areacode, route_pk):
+    tour_data = Tours.objects.filter(
+        sigungucode=areacode
+    ).filter(
+        Q(cat3='A01011200') | Q(cat3='A02020800') | Q(cat3='A02030600') | Q(cat3='A02050200') | Q(cat3='A02050600') | Q(cat3='A02060100') | Q(cat3='A02060200') | Q(cat3='A02060300') | Q(cat3='A02060400') | Q(cat3='A02060500')
+    )
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    routes_plan = Routes_plan.objects.get(pk=route_pk)
+    tour_seq = 1
+    
+    for tour in random_tour_data:
+        Tour_plan_data.objects.create(
+            tour=tour,
+            route=routes_plan,
+            tour_seq=tour_seq
+        )
+        tour_seq += 1
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+@api_view(['GET'])
+def routes_relax(request, areacode, route_pk):
+    tour_data = Tours.objects.filter(
+        sigungucode=areacode
+    ).filter(
+        Q(cat2='A0201') | Q(cat2='A0202') | Q(cat2='A0203') | Q(cat3='A05020900')
+    )
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 2))
+    routes_plan = Routes_plan.objects.get(pk=route_pk)
+    tour_seq = 1
+    
+    for tour in random_tour_data:
+        Tour_plan_data.objects.create(
+            tour=tour,
+            route=routes_plan,
+            tour_seq=tour_seq
+        )
+        tour_seq += 1
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+##################################################################################################
+# 랜덤 관광지 추천받는 함수
+##################################################################################
+
+@api_view(['GET'])
+def get_tours_by_area(request, areacode):
+    tour_data = Tours.objects.filter(sigungucode=areacode)
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+@api_view(['GET'])
+def get_tours_by_tour_type(request, areacode, tour_type):
+    if tour_type == '힐링형 감자':
+        tour_data = Tours.objects.filter(
+        sigungucode=areacode
+        ).filter(
+            Q(cat2='A0101') | Q(cat3='A02010800') | Q(cat3='A02020300') | Q(cat3='A02020600') | Q(cat3='A02020700') | Q(cat3='A03030500') | Q(cat3='A03030600') | Q(cat3='A02010800')
+        )
+    elif tour_type == '액티비티형 옥수수':
+        tour_data = Tours.objects.filter(
+        sigungucode=areacode
+        ).filter(
+            Q(cat1='A03') | Q(cat3='A02020400') | Q(cat3='A02020500')
+        )
+    elif tour_type == '관람형 배추':
+        tour_data = Tours.objects.filter(
+        sigungucode=areacode
+        ).filter(
+            Q(cat2='A0201') | Q(cat3='A02030200') | Q(cat3='A02030300') | Q(cat3='A02050200') | Q(cat3='A02060100') | Q(cat3='A02060200') | Q(cat3='A02060300') | Q(cat3='A02060500') | Q(cat3='A04010700')
+        )
+    elif tour_type == '미식형 황태':
+        tour_data = Tours.objects.filter(
+        sigungucode=areacode
+        ).filter(
+            Q(cat3='A05020700') | Q(cat3='A05020900') | Q(cat3='A04010100') | Q(cat3='A04010200') | Q(cat3='A02030100') | Q(cat3='A02040600')
+        )
+    elif tour_type == '사람좋아 쌀알':
+        tour_data = Tours.objects.filter(
+        sigungucode=areacode
+        ).filter(
+            Q(cat3='A01011200') | Q(cat3='A02020400') | Q(cat3='A02020600') | Q(cat3='A02020800') | Q(cat3='A02030600') | Q(cat3='A02060400') | Q(cat3='A03021200') | Q(cat3='A03021400') | Q(cat3='A03030800')
+        )
+    elif tour_type == '도전형 인삼':
+        tour_data = Tours.objects.filter(
+        sigungucode=areacode
+        ).filter(
+            Q(cat2='A0203') | Q(cat3='A02020200') | Q(cat3='A02020600') | Q(cat3='A03021800') | Q(cat3='A03022400') | Q(cat3='A03030200') | Q(cat3='A03030400') | Q(cat3='A03040300') | Q(cat3='A03040400')
+        )
+    elif tour_type == '인플루언서형 복숭아':
+        tour_data = Tours.objects.filter(
+        sigungucode=areacode
+        ).filter(
+            Q(cat3='A01011200') | Q(cat3='A02020800') | Q(cat3='A02030600') | Q(cat3='A02050200') | Q(cat3='A02050600') | Q(cat3='A02060100') | Q(cat3='A02060200') | Q(cat3='A02060300') | Q(cat3='A02060400') | Q(cat3='A02060500')
+        )
+    elif tour_type == '나무늘보형 순두부':
+        tour_data = Tours.objects.filter(
+        sigungucode=areacode
+        ).filter(
+            Q(cat2='A0201') | Q(cat2='A0202') | Q(cat2='A0203') | Q(cat3='A05020900')
+        )
+    else:
+        return JsonResponse({'result': '여행 유형 입력이 올바르지 않습니다.'})
+    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+    return JsonResponse({'result': random_data_json})
+
+
+##########################################################################
+# 관광지 루트 조회 함수
+####################################################################################
+
+@api_view(['GET'])
+def get_routes_data_by_route(request, route_pk):
+    route = Routes_plan.objects.get(pk=route_pk)
+    tour_plan_data = Tour_plan_data.objects.filter(route=route)
+    results = []
+    
+    for data in tour_plan_data:
+        tour = data.tour
+        result = {
+            'tour_plan_data': {
+                'pk': data.pk,
+                'tour_seq': data.tour_seq,
+            },
+            'tour': {
+                'pk': tour.pk,
+                'sigungucode': tour.sigungucode,
+                'addr1': tour.addr1,
+                'addr2': tour.addr2,
+                'image': tour.image,
+                'cat1': tour.cat1,
+                'cat2': tour.cat2,
+                'cat3': tour.cat3,
+                'type_id': tour.type_id,
+                'mapx': tour.mapx,
+                'mapy': tour.mapy,
+                'title': tour.title,
+                'zipcode': tour.zipcode,
+                'tel': tour.tel,
+                'eventstartdate': tour.eventstartdate,
+                'eventenddate': tour.eventenddate,
+            }
+        }
+
+        results.append(result)
+    return JsonResponse({'result': results}, json_dumps_params={'ensure_ascii': False, 'indent': 4})
+
+@api_view(['GET'])
+def get_routes_by_route_area(request, areacode):
+    filtered_routes = Routes_plan.objects.filter(route_area=areacode)
+    tour_plan_data = Tour_plan_data.objects.filter(route__in=filtered_routes).select_related('tour').prefetch_related('route')
+    results = []
+    
+    for data in tour_plan_data:
+        route = data.route
+        tour = data.tour
+        result = {
+            'route': {
+                'pk': route.pk,
+                'route_name': route.route_name,
+                'lodge': route.lodge,
+                'route_area': route.route_area,
+                'tour_startdate': route.tour_startdate,
+                'tour_enddate': route.tour_enddate,
+            },
+            'tour_plan_data': {
+                'pk': data.pk,
+                'tour_seq': data.tour_seq,
+            },
+            'tour': {
+                'pk': tour.pk,
+                'sigungucode': tour.sigungucode,
+                'addr1': tour.addr1,
+                'addr2': tour.addr2,
+                'image': tour.image,
+                'cat1': tour.cat1,
+                'cat2': tour.cat2,
+                'cat3': tour.cat3,
+                'type_id': tour.type_id,
+                'mapx': tour.mapx,
+                'mapy': tour.mapy,
+                'title': tour.title,
+                'zipcode': tour.zipcode,
+                'tel': tour.tel,
+                'eventstartdate': tour.eventstartdate,
+                'eventenddate': tour.eventenddate,
+            }
+        }
+        results.append(result)
+
+    return JsonResponse({'result': results}, json_dumps_params={'ensure_ascii': False, 'indent': 4})
+
+@api_view(['GET'])
+def get_routes_by_tour_type(request, tour_type):
+    groups = Groups.objects.filter(tour_type=tour_type)
+    filtered_routes = Routes_plan.objects.filter(group__in=groups)
+    
+    tour_plan_data = Tour_plan_data.objects.filter(route__in=filtered_routes).select_related('tour').prefetch_related('route')
+    results = []
+    
+    for data in tour_plan_data:
+        route = data.route
+        tour = data.tour
+        result = {
+            'route': {
+                'pk': route.pk,
+                'route_name': route.route_name,
+                'lodge': route.lodge,
+                'route_area': route.route_area,
+                'tour_startdate': route.tour_startdate,
+                'tour_enddate': route.tour_enddate,
+            },
+            'tour_plan_data': {
+                'pk': data.pk,
+                'tour_seq': data.tour_seq,
+            },
+            'tour': {
+                'pk': tour.pk,
+                'sigungucode': tour.sigungucode,
+                'addr1': tour.addr1,
+                'addr2': tour.addr2,
+                'image': tour.image,
+                'cat1': tour.cat1,
+                'cat2': tour.cat2,
+                'cat3': tour.cat3,
+                'type_id': tour.type_id,
+                'mapx': tour.mapx,
+                'mapy': tour.mapy,
+                'title': tour.title,
+                'zipcode': tour.zipcode,
+                'tel': tour.tel,
+                'eventstartdate': tour.eventstartdate,
+                'eventenddate': tour.eventenddate,
+            }
+        }
+        results.append(result)
+
+    return JsonResponse({'result': results}, json_dumps_params={'ensure_ascii': False, 'indent': 4})
+
+@api_view(['GET'])
+def get_routes_by_tour_type_area(request, areacode, tour_type):
+    groups = Groups.objects.filter(tour_type=tour_type)
+    filtered_routes = Routes_plan.objects.filter(group__in=groups, route_area=areacode)
+    
+    tour_plan_data = Tour_plan_data.objects.filter(route__in=filtered_routes).select_related('tour').prefetch_related('route')
+    results = []
+    
+    for data in tour_plan_data:
+        route = data.route
+        tour = data.tour
+        result = {
+            'route': {
+                'pk': route.pk,
+                'route_name': route.route_name,
+                'lodge': route.lodge,
+                'route_area': route.route_area,
+                'tour_startdate': route.tour_startdate,
+                'tour_enddate': route.tour_enddate,
+            },
+            'tour_plan_data': {
+                'pk': data.pk,
+                'tour_seq': data.tour_seq,
+            },
+            'tour': {
+                'pk': tour.pk,
+                'sigungucode': tour.sigungucode,
+                'addr1': tour.addr1,
+                'addr2': tour.addr2,
+                'image': tour.image,
+                'cat1': tour.cat1,
+                'cat2': tour.cat2,
+                'cat3': tour.cat3,
+                'type_id': tour.type_id,
+                'mapx': tour.mapx,
+                'mapy': tour.mapy,
+                'title': tour.title,
+                'zipcode': tour.zipcode,
+                'tel': tour.tel,
+                'eventstartdate': tour.eventstartdate,
+                'eventenddate': tour.eventenddate,
+            }
+        }
+        results.append(result)
+
+    return JsonResponse({'result': results}, json_dumps_params={'ensure_ascii': False, 'indent': 4})
 
 ###########################################################################################################
 # 여행 캐릭터 유형                                                       
