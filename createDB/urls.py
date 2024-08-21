@@ -7,6 +7,7 @@ urlpatterns = [
   path('save_tours_to_db/',views.save_tours_to_db, name="save_tours_to_db"),
   path('recommend-course/', views.recommend_course_view, name='recommend-course'),
   # path('recommend-group-course/', views.recommend_group_course_view, name='recommend-group-course'),
+  # 데이터 저장 urls
   path('random_tour/', views.random_tour, name='random-tour'),
   path('routes_healing/<int:areacode>/<int:route_pk>/', views.routes_healing, name='routes_healing'),
   path('routes_activity/<int:areacode>/<int:route_pk>/', views.routes_activity, name='routes_activity'),
@@ -16,4 +17,9 @@ urlpatterns = [
   path('routes_experience/<int:areacode>/<int:route_pk>/', views.routes_experience, name='routes_experience'),
   path('routes_influencer/<int:areacode>/<int:route_pk>/', views.routes_influencer, name='routes_influencer'),
   path('routes_relax/<int:areacode>/<int:route_pk>/', views.routes_relax, name='routes_relax'),
+  # 데이터 조회 urls
+  path('get_tour_plan_data_by_route/<int:route_pk>/', views.get_tour_plan_data_by_route, name='get_tour_plan_data_by_route'),
+  path('get_tours_by_route_area/<int:route_area>/', views.get_tours_by_route_area, name='get_tours_by_route_area'),
+  path('get_tours_by_tour_type/<str:tour_type>/', views.get_tours_by_tour_type, name='get_tours_by_tour_type'),
+  path('get_tours_by_tour_type_area/<int:route_area>/<str:tour_type>/', views.get_tours_by_tour_type_area, name='get_tours_by_tour_type_area')
 ]
