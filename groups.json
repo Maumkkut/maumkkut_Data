@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
         "people_num": 3,
-        "tour_type": "Èú¸µÇü °¨ÀÚ",
+        "tour_type": "íë§í˜• ê°ì",
         "group_name": "group1"
     }
 },
@@ -13,7 +13,7 @@
     "pk": 2,
     "fields": {
         "people_num": 3,
-        "tour_type": "¾×Æ¼ºñÆ¼Çü ¿Á¼ö¼ö",
+        "tour_type": "ì•¡í‹°ë¹„í‹°í˜• ì˜¥ìˆ˜ìˆ˜",
         "group_name": "group2"
     }
 },
@@ -22,7 +22,7 @@
     "pk": 3,
     "fields": {
         "people_num": 4,
-        "tour_type": "°ü¶÷Çü ¹èÃß",
+        "tour_type": "ê´€ëŒí˜• ë°°ì¶”",
         "group_name": "group3"
     }
 }

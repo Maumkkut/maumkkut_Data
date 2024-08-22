@@ -251,6 +251,7 @@ def get_tour_courses(character_type):
         course_info['cat3'] = expand_cat3_ranges(course_info['cat3_ranges'])
     return course_info
 
+
 # 소분류 우선 만약 소분류로 했을때 결과가 없으면 중분류까지 감
 def filter_courses_by_preference(tour_courses, cat3_list, cat2_list):
     # 소분류 코드(cat3)로 필터링
@@ -259,6 +260,7 @@ def filter_courses_by_preference(tour_courses, cat3_list, cat2_list):
     if not filtered_courses:
         filtered_courses = [course for course in tour_courses if course.cat2 in cat2_list]
     return filtered_courses
+
 
 
 # 거리 계산 - 코스 추천시 코스별 거리가 멀면 안되기에
@@ -432,11 +434,13 @@ def create_weighted_list(preferences):
             weighted_list.extend([keywords[i]] * weight)
     return weighted_list
 
+
 # 코사인 유사도 계산
 def calculate_cosine_similarity(group1, group2):
     group1_vector = np.array([group1])
     group2_vector = np.array([group2])
     return cosine_similarity(group1_vector, group2_vector)[0][0]
+
 
 # 유사한 그룹 찾기
 def find_similar_group(current_group_preferences, groups_data):
