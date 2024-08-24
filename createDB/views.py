@@ -19,9 +19,11 @@ import random
 from django.db.models import Q
 # Create your views here.
 
+
 api_key = settings.API_KEY
 BASE_URL = 'https://apis.data.go.kr/B551011/KorService1/areaBasedList1'
  # ?serviceKey=api_key&contentTypeId=28&numOfRows=10&pageNo=1&MobileOS=ETC&MobileApp=TestApp&_type=json
+
 
 @api_view(['GET'])
 def save_tour_12(request):
