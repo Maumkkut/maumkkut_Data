@@ -1,9 +1,7 @@
 from .models import Groups, Group_Members, Tours, Routes_plan, Tour_plan_data
 import json
 import random
-from django.db.models import Q
 from django.core import serializers
-from django.http import JsonResponse
 from .filter_name import filter_type
 
 def random_area(areacode):
