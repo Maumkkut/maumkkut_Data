@@ -17,92 +17,93 @@ from sklearn.metrics.pairwise import cosine_similarity
 import json
 import random
 from django.db.models import Q
+from .random_route import random_area, random_tour_type
 # Create your views here.
 
 api_key = settings.API_KEY
 BASE_URL = 'https://apis.data.go.kr/B551011/KorService1/areaBasedList1'
  # ?serviceKey=api_key&contentTypeId=28&numOfRows=10&pageNo=1&MobileOS=ETC&MobileApp=TestApp&_type=json
 
-@api_view(['GET'])
-def save_tour_12(request):
-  URL = BASE_URL
-  params = {
-    'serviceKey': api_key,
-    'contentTypeId': 12,
-    'numOfRows': 100, 
-    'pageNo': 1, 
-    'MobileOS': 'ETC',
-    'MobileApp': 'TestApp',
-    '_type': 'json'
-  }
-  response = requests.get(URL, params=params).json()
-  tour_data = response.get("response").get("body").get("items").get("item")
-  return Response(tour_data)
+# @api_view(['GET'])
+# def save_tour_12(request):
+#   URL = BASE_URL
+#   params = {
+#     'serviceKey': api_key,
+#     'contentTypeId': 12,
+#     'numOfRows': 100, 
+#     'pageNo': 1, 
+#     'MobileOS': 'ETC',
+#     'MobileApp': 'TestApp',
+#     '_type': 'json'
+#   }
+#   response = requests.get(URL, params=params).json()
+#   tour_data = response.get("response").get("body").get("items").get("item")
+#   return Response(tour_data)
 
 ###########################################################################################################
 # 관광데이터 저장                                                  
 ###########################################################################################################
 
-@api_view(['GET'])
-def fetch_and_save_tours(request):
-  URL = BASE_URL
-  print('API_KEY:', api_key)
-  params = {
-    'serviceKey': api_key,
-    "areaCode": "32",  # 강원도 코드
-    'numOfRows': 1000,
-    'pageNo': 6,
-    'MobileOS': 'ETC',
-    'MobileApp': 'TestApp',
-    '_type': 'json'
-  }
-  response = requests.get(URL, params=params)
-  print(response)
-  response.raise_for_status()  # HTTP 오류가 발생했는지 확인
-  print("Response status code:", response.status_code)
-  print("Response text:", response.text)
-  response = response.json()
-  tour_data = response.get("response").get("body").get("items").get("item")
+# @api_view(['GET'])
+# def fetch_and_save_tours(request):
+#   URL = BASE_URL
+#   print('API_KEY:', api_key)
+#   params = {
+#     'serviceKey': api_key,
+#     "areaCode": "32",  # 강원도 코드
+#     'numOfRows': 1000,
+#     'pageNo': 6,
+#     'MobileOS': 'ETC',
+#     'MobileApp': 'TestApp',
+#     '_type': 'json'
+#   }
+#   response = requests.get(URL, params=params)
+#   print(response)
+#   response.raise_for_status()  # HTTP 오류가 발생했는지 확인
+#   print("Response status code:", response.status_code)
+#   print("Response text:", response.text)
+#   response = response.json()
+#   tour_data = response.get("response").get("body").get("items").get("item")
 
-  if tour_data:
-    save_tours_to_db(tour_data)
-    return Response({"message": "데이터 저장 완료!"}, status=status.HTTP_201_CREATED)
-  else:
-    return Response({"error": "저장할 데이터가 없습니다."}, status=status.HTTP_204_NO_CONTENT)
+#   if tour_data:
+#     save_tours_to_db(tour_data)
+#     return Response({"message": "데이터 저장 완료!"}, status=status.HTTP_201_CREATED)
+#   else:
+#     return Response({"error": "저장할 데이터가 없습니다."}, status=status.HTTP_204_NO_CONTENT)
 
-@api_view(['GET'])
-def save_tours_to_db(tour_data):
-  for tour in tour_data:
-    # 중복 확인
-    if not Tours.objects.filter(title=tour.get("title")).exists():
-      tour_instance = Tours(
-        id=tour.get("id"),
-        sigungucode=tour.get("sigungucode", None),
-        addr1=tour.get("addr1", ""),
-        addr2=tour.get("addr2", ""),
-        image=tour.get("firstimage", ""),
-        cat1=tour.get("cat1", ""),
-        cat2=tour.get("cat2", ""),
-        cat3=tour.get("cat3", ""),
-        type_id=tour.get("contenttypeid", None),
-        mapx=tour.get("mapx", 0),
-        mapy=tour.get("mapy", 0),
-        title=tour.get("title", ""),
-        zipcode=tour.get("zipcode") if tour.get("zipcode") else None,
-        tel=tour.get("tel", ""),
-        eventstartdate=tour.get("eventstartdate", None),
-        eventenddate=tour.get("eventenddate", None)
-      )
-      tour_instance.save()
-    #   return JsonResponse({"message": "데이터 저장 완료!"}, status=status.HTTP_201_CREATED)
+# @api_view(['GET'])
+# def save_tours_to_db(tour_data):
+#   for tour in tour_data:
+#     # 중복 확인
+#     if not Tours.objects.filter(title=tour.get("title")).exists():
+#       tour_instance = Tours(
+#         id=tour.get("id"),
+#         sigungucode=tour.get("sigungucode", None),
+#         addr1=tour.get("addr1", ""),
+#         addr2=tour.get("addr2", ""),
+#         image=tour.get("firstimage", ""),
+#         cat1=tour.get("cat1", ""),
+#         cat2=tour.get("cat2", ""),
+#         cat3=tour.get("cat3", ""),
+#         type_id=tour.get("contenttypeid", None),
+#         mapx=tour.get("mapx", 0),
+#         mapy=tour.get("mapy", 0),
+#         title=tour.get("title", ""),
+#         zipcode=tour.get("zipcode") if tour.get("zipcode") else None,
+#         tel=tour.get("tel", ""),
+#         eventstartdate=tour.get("eventstartdate", None),
+#         eventenddate=tour.get("eventenddate", None)
+#       )
+#       tour_instance.save()
+#     #   return JsonResponse({"message": "데이터 저장 완료!"}, status=status.HTTP_201_CREATED)
 
 
-@api_view(['GET'])
-def random_tour(request):
-    tour_data = Tours.objects.all()
-    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
-    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
-    return JsonResponse({'result': random_data_json})
+# @api_view(['GET'])
+# def random_tour(request):
+#     tour_data = Tours.objects.all()
+#     random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
+#     random_data_json = json.loads(serializers.serialize('json', random_tour_data))
+#     return JsonResponse({'result': random_data_json})
 
 ##############################################################
 # 관광지 유형별 루트 데이터 저장 함수
@@ -282,66 +283,11 @@ def routes_relax(request, areacode, route_pk):
 
 @api_view(['GET'])
 def get_tours_by_area(request, areacode):
-    tour_data = Tours.objects.filter(sigungucode=areacode)
-    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
-    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
-    return JsonResponse({'result': random_data_json})
+    return JsonResponse({'result': random_area(areacode)})
 
 @api_view(['GET'])
 def get_tours_by_tour_type(request, areacode, tour_type):
-    if tour_type == '힐링형 감자':
-        tour_data = Tours.objects.filter(
-        sigungucode=areacode
-        ).filter(
-            Q(cat2='A0101') | Q(cat3='A02010800') | Q(cat3='A02020300') | Q(cat3='A02020600') | Q(cat3='A02020700') | Q(cat3='A03030500') | Q(cat3='A03030600') | Q(cat3='A02010800')
-        )
-    elif tour_type == '액티비티형 옥수수':
-        tour_data = Tours.objects.filter(
-        sigungucode=areacode
-        ).filter(
-            Q(cat1='A03') | Q(cat3='A02020400') | Q(cat3='A02020500')
-        )
-    elif tour_type == '관람형 배추':
-        tour_data = Tours.objects.filter(
-        sigungucode=areacode
-        ).filter(
-            Q(cat2='A0201') | Q(cat3='A02030200') | Q(cat3='A02030300') | Q(cat3='A02050200') | Q(cat3='A02060100') | Q(cat3='A02060200') | Q(cat3='A02060300') | Q(cat3='A02060500') | Q(cat3='A04010700')
-        )
-    elif tour_type == '미식형 황태':
-        tour_data = Tours.objects.filter(
-        sigungucode=areacode
-        ).filter(
-            Q(cat3='A05020700') | Q(cat3='A05020900') | Q(cat3='A04010100') | Q(cat3='A04010200') | Q(cat3='A02030100') | Q(cat3='A02040600')
-        )
-    elif tour_type == '사람좋아 쌀알':
-        tour_data = Tours.objects.filter(
-        sigungucode=areacode
-        ).filter(
-            Q(cat3='A01011200') | Q(cat3='A02020400') | Q(cat3='A02020600') | Q(cat3='A02020800') | Q(cat3='A02030600') | Q(cat3='A02060400') | Q(cat3='A03021200') | Q(cat3='A03021400') | Q(cat3='A03030800')
-        )
-    elif tour_type == '도전형 인삼':
-        tour_data = Tours.objects.filter(
-        sigungucode=areacode
-        ).filter(
-            Q(cat2='A0203') | Q(cat3='A02020200') | Q(cat3='A02020600') | Q(cat3='A03021800') | Q(cat3='A03022400') | Q(cat3='A03030200') | Q(cat3='A03030400') | Q(cat3='A03040300') | Q(cat3='A03040400')
-        )
-    elif tour_type == '인플루언서형 복숭아':
-        tour_data = Tours.objects.filter(
-        sigungucode=areacode
-        ).filter(
-            Q(cat3='A01011200') | Q(cat3='A02020800') | Q(cat3='A02030600') | Q(cat3='A02050200') | Q(cat3='A02050600') | Q(cat3='A02060100') | Q(cat3='A02060200') | Q(cat3='A02060300') | Q(cat3='A02060400') | Q(cat3='A02060500')
-        )
-    elif tour_type == '나무늘보형 순두부':
-        tour_data = Tours.objects.filter(
-        sigungucode=areacode
-        ).filter(
-            Q(cat2='A0201') | Q(cat2='A0202') | Q(cat2='A0203') | Q(cat3='A05020900')
-        )
-    else:
-        return JsonResponse({'result': '여행 유형 입력이 올바르지 않습니다.'})
-    random_tour_data = random.sample(list(tour_data), min(len(tour_data), 5))
-    random_data_json = json.loads(serializers.serialize('json', random_tour_data))
-    return JsonResponse({'result': random_data_json})
+    return JsonResponse({'result': random_tour_type(areacode, tour_type)})
 
 
 ##########################################################################
@@ -911,7 +857,7 @@ def recommend_similar_group_view(request):
         return JsonResponse({"error": "유사한 그룹을 찾을 수 없습니다."}, status=400)
 
     similar_group_id = similar_group['id']
-    similar_group_routes = list(Routes.objects.filter(group_id=similar_group_id).values())
+    similar_group_routes = list(Routes_plan.objects.filter(group_id=similar_group_id).values())
 
     return JsonResponse({
         "message": "유사한 그룹의 여행 유형이 제공되었습니다.",
