@@ -76,7 +76,6 @@ def find_similar_group(current_group_preferences, groups_data):
 
 # input -> group_id(int)
 def recommend_similar_group_view(current_group_id):
-
     # 현재 그룹의 구성원들의 중요도 리스트를 가져옴
     group_members = Group_Members.objects.filter(group_id=current_group_id)
     
@@ -98,7 +97,33 @@ def recommend_similar_group_view(current_group_id):
 
     similar_group = find_similar_group(current_group_weighted_list, groups_data)
 
-    similar_group_id = similar_group['id']
-    similar_group_routes = list(Routes_plan.objects.filter(group_id=similar_group_id).values())
+    if not similar_group:
+        return {"error": "유사한 그룹을 찾을 수 없습니다."}
 
-    return similar_group_routes
+    similar_group_id = similar_group['id']
+    similar_group_routes = Routes_plan.objects.filter(group_id=similar_group_id)
+
+    # 각 여행 코스에 대한 주소 정보 포함
+    result = []
+    for route in similar_group_routes:
+        tours = route.route_details.all()  # 해당 경로와 연결된 모든 Tours 객체 가져오기
+        tour_info_list = [
+            {
+                "title": tour.title,
+                "addr1": tour.addr1,
+                "mapx": tour.mapx,
+                "mapy": tour.mapy
+            }
+            for tour in tours
+        ]
+        result.append({
+            "route_name": route.route_name,
+            "lodge": route.lodge,
+            "route_area": route.route_area,
+            "tour_startdate": route.tour_startdate,
+            "tour_enddate": route.tour_enddate,
+            "group_id": route.group_id,
+            "tour_info_list": tour_info_list  # 각 코스의 주소 정보 포함
+        })
+
+    return result
