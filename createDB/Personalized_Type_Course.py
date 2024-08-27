@@ -12,6 +12,7 @@ import requests
 import json
 from .models import Groups, Group_Members, Tours, Routes_plan, Tour_plan_data
 from django.shortcuts import get_object_or_404, get_list_or_404
+from geopy.distance import geodesic
 
 ###########################################################################################################
 # 여행 캐릭터 유형                                                       
