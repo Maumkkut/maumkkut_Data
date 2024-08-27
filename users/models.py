@@ -3,7 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from createDB.models import Tours
 
 # Create your models here.
-class User(AbstractUser):
+class User_info(AbstractUser):
+    # user_id = models.ForeignKey
     user_age = models.IntegerField(null=True)
     user_type = models.TextField(null=True)
     user_healing = models.IntegerField(null=True)
