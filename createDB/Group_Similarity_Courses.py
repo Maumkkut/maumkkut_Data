@@ -73,21 +73,19 @@ def find_similar_group(current_group_preferences, groups_data):
 
     return most_similar_group
 
-@csrf_exempt
-def recommend_similar_group_view(request):
-    current_group_id = request.GET.get('group_id')
 
+# input -> group_id(int)
+def recommend_similar_group_view(current_group_id):
     # 현재 그룹의 구성원들의 중요도 리스트를 가져옴
     group_members = Group_Members.objects.filter(group_id=current_group_id)
+    
     current_group_preferences = [get_importance_list(member.users) for member in group_members]
 
     if not current_group_preferences:
-        return JsonResponse({"error": "현재 그룹에 구성원이 없습니다."}, status=400)
+        return {"error": "현재 그룹에 구성원이 없습니다."}
 
-    # 단어 빈도를 반영하여 리스트 생성
     current_group_weighted_list = sum(current_group_preferences, [])
 
-    # 다른 그룹들의 데이터 가져오기
     groups_data = []
     all_groups = Groups.objects.exclude(id=current_group_id)
     for group in all_groups:
@@ -97,17 +95,35 @@ def recommend_similar_group_view(request):
             group_weighted_list = sum(group_preferences, [])
             groups_data.append({'id': group.id, 'preferences': group_weighted_list})
 
-    # 가장 유사한 그룹 찾기
     similar_group = find_similar_group(current_group_weighted_list, groups_data)
+
     if not similar_group:
-        return JsonResponse({"error": "유사한 그룹을 찾을 수 없습니다."}, status=400)
+        return {"error": "유사한 그룹을 찾을 수 없습니다."}
 
-    # 유사한 그룹의 여행 코스 조회
     similar_group_id = similar_group['id']
-    similar_group_routes = list(Routes_plan.objects.filter(group_id=similar_group_id).values())
+    similar_group_routes = Routes_plan.objects.filter(group_id=similar_group_id)
 
-    return JsonResponse({
-        "message": "유사한 그룹의 여행 유형이 제공되었습니다.",
-        "similar_group_id": similar_group_id,
-        "similar_group_routes": similar_group_routes
-    }, status=200)
+    # 각 여행 코스에 대한 주소 정보 포함
+    result = []
+    for route in similar_group_routes:
+        tours = route.route_details.all()  # 해당 경로와 연결된 모든 Tours 객체 가져오기
+        tour_info_list = [
+            {
+                "title": tour.title,
+                "addr1": tour.addr1,
+                "mapx": tour.mapx,
+                "mapy": tour.mapy
+            }
+            for tour in tours
+        ]
+        result.append({
+            "route_name": route.route_name,
+            "lodge": route.lodge,
+            "route_area": route.route_area,
+            "tour_startdate": route.tour_startdate,
+            "tour_enddate": route.tour_enddate,
+            "group_id": route.group_id,
+            "tour_info_list": tour_info_list  # 각 코스의 주소 정보 포함
+        })
+
+    return result
