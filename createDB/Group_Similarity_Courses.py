@@ -78,7 +78,8 @@ def find_similar_group(current_group_preferences, groups_data):
 def recommend_similar_group_view(current_group_id):
     # 현재 그룹의 구성원들의 중요도 리스트를 가져옴
     group_members = Group_Members.objects.filter(group_id=current_group_id)
-    
+    print("-----------------------")
+    print(group_members)
     current_group_preferences = [get_importance_list(member.users) for member in group_members]
 
     if not current_group_preferences:

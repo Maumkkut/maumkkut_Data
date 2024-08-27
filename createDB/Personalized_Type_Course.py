@@ -234,3 +234,5 @@ def recommend_course_view(importance_list, travel_character, region):
     result_list = [{"title": course.title, "addr1": course.addr1, "mapx": course.mapx, "mapy": course.mapy} for course in result]
 
     return result_list
+
+
