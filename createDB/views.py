@@ -22,7 +22,9 @@ from .get_route_data import route_data_by_pk, route_data_by_area, route_data_by_
 from .save_route import random_route
 from .Personalized_Type_Course import *
 from .Group_Similarity_Courses import *
+from .Travel_Character import *
 from sklearn.feature_extraction.text import CountVectorizer
+
 # Create your views here.
 
 api_key = settings.API_KEY
