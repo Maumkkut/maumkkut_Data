@@ -191,6 +191,8 @@ def build_course_pattern(courses, food_courses, relaxation, food_importance, max
 
 
 
+# 개인 코스 추천
+# input -> [1,1,1,1,1,1,1,1,1,2],'힐링형 감자','강릉'
 def recommend_course_view(importance_list, travel_character, region):
     relaxation = importance_list[0]
     food_importance = importance_list[4]

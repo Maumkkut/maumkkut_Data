@@ -10,7 +10,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 import requests
 from .serializers import TourSerializer
-from .models import Groups, Group_Members, Tours, Routes_plan, Tour_plan_data
+from .models import Groups, Group_Members, Tours, Routes_plan, Tour_plan_data, User_info
 from django.shortcuts import get_object_or_404, get_list_or_404
 from geopy.distance import geodesic
 from sklearn.metrics.pairwise import cosine_similarity
@@ -21,6 +21,27 @@ from sklearn.feature_extraction.text import CountVectorizer
 ###########################################################################################################
 # 단체                                                 
 ###########################################################################################################
+
+region_codes = {
+    "강릉": 1,
+    "고성": 2,
+    "동해": 3,
+    "삼척": 4,
+    "속초": 5,
+    "양구": 6,
+    "양양": 7,
+    "영월": 8,
+    "원주": 9,
+    "인제": 10,
+    "정선": 11,
+    "철원": 12,
+    "춘천": 13,
+    "태백": 14,
+    "평창": 15,
+    "홍천": 16,
+    "화천": 17,
+    "횡성": 18
+}
 
 # 중요도를 기반으로 가중치 리스트 생성
 def create_weighted_list(preferences):
@@ -34,18 +55,18 @@ def create_weighted_list(preferences):
     return weighted_list
 
 # 중요도를 리스트 형태로 가져오는 함수
-def get_importance_list(user):
+def get_importance_list(user_info):
     importance_list = []
     importance_mapping = {
-        '힐링': user.user_healing,
-        '여유로움': user.user_relax,
-        '자연': user.user_nature,
-        '관람': user.user_exhibit,
-        '음식점': user.user_food,
-        '모험': user.user_adventure,
-        '사람 많은 곳': user.user_people,
-        '쇼핑': user.user_shopping,
-        '사진 촬영': user.user_photo,
+        '힐링': user_info.user_healing,
+        '여유로움': user_info.user_relax,
+        '자연': user_info.user_nature,
+        '관람': user_info.user_exhibit,
+        '음식점': user_info.user_food,
+        '모험': user_info.user_adventure,
+        '사람 많은 곳': user_info.user_people,
+        '쇼핑': user_info.user_shopping,
+        '사진 촬영': user_info.user_photo,
     }
     
     for key, value in importance_mapping.items():
@@ -75,56 +96,94 @@ def find_similar_group(current_group_preferences, groups_data):
 
 
 # input -> group_id(int)
-def recommend_similar_group_view(current_group_id):
+def recommend_similar_group_view(current_group_id, target_area):
+    # 지역명을 숫자 코드로 변환
+    region_codes = {
+        "강릉": 1,
+        "고성": 2,
+        "동해": 3,
+        "삼척": 4,
+        "속초": 5,
+        "양구": 6,
+        "양양": 7,
+        "영월": 8,
+        "원주": 9,
+        "인제": 10,
+        "정선": 11,
+        "철원": 12,
+        "춘천": 13,
+        "태백": 14,
+        "평창": 15,
+        "홍천": 16,
+        "화천": 17,
+        "횡성": 18
+    }
+    
+    # target_area를 숫자 코드로 변환
+    area_code = region_codes.get(target_area)
+    if area_code is None:
+        return {"error": "유효하지 않은 지역입니다."}
+
     # 현재 그룹의 구성원들의 중요도 리스트를 가져옴
     group_members = Group_Members.objects.filter(group_id=current_group_id)
-    print("-----------------------")
-    print(group_members)
-    current_group_preferences = [get_importance_list(member.users) for member in group_members]
+    current_group_preferences = []
+    
+    for member in group_members:
+        user_info = member.users.user_info_set.first()
+        if user_info:
+            current_group_preferences.append(get_importance_list(user_info))
 
     if not current_group_preferences:
         return {"error": "현재 그룹에 구성원이 없습니다."}
 
     current_group_weighted_list = sum(current_group_preferences, [])
 
+    # 특정 지역(area_code)에 해당하는 그룹만 필터링
+    filtered_groups = Groups.objects.filter(routes_plan__route_area=area_code).exclude(id=current_group_id).distinct()
+
     groups_data = []
-    all_groups = Groups.objects.exclude(id=current_group_id)
-    for group in all_groups:
+    for group in filtered_groups:
         group_members = Group_Members.objects.filter(group_id=group.id)
-        group_preferences = [get_importance_list(member.users) for member in group_members]
+        group_preferences = []
+        for member in group_members:
+            user_info = member.users.user_info_set.first()
+            if user_info:
+                group_preferences.append(get_importance_list(user_info))
         if group_preferences:
             group_weighted_list = sum(group_preferences, [])
             groups_data.append({'id': group.id, 'preferences': group_weighted_list})
 
+    # 가장 유사한 그룹 찾기
     similar_group = find_similar_group(current_group_weighted_list, groups_data)
 
     if not similar_group:
         return {"error": "유사한 그룹을 찾을 수 없습니다."}
 
     similar_group_id = similar_group['id']
-    similar_group_routes = Routes_plan.objects.filter(group_id=similar_group_id)
+    similar_group_routes = Routes_plan.objects.filter(group_id=similar_group_id, route_area=area_code)
 
-    # 각 여행 코스에 대한 주소 정보 포함
-    result = []
-    for route in similar_group_routes:
-        tours = route.route_details.all()  # 해당 경로와 연결된 모든 Tours 객체 가져오기
-        tour_info_list = [
-            {
-                "title": tour.title,
-                "addr1": tour.addr1,
-                "mapx": tour.mapx,
-                "mapy": tour.mapy
-            }
-            for tour in tours
-        ]
-        result.append({
-            "route_name": route.route_name,
-            "lodge": route.lodge,
-            "route_area": route.route_area,
-            "tour_startdate": route.tour_startdate,
-            "tour_enddate": route.tour_enddate,
-            "group_id": route.group_id,
-            "tour_info_list": tour_info_list  # 각 코스의 주소 정보 포함
-        })
+    if not similar_group_routes.exists():
+        return {"error": "해당 그룹의 코스를 찾을 수 없습니다."}
+
+    # 첫 번째 코스만 반환
+    selected_route = similar_group_routes.first()
+    tour_info_list = [
+        {
+            "title": tour.title,
+            "addr1": tour.addr1,
+            "mapx": tour.mapx,
+            "mapy": tour.mapy
+        }
+        for tour in selected_route.route_details.all()
+    ]
+    result = {
+        "route_name": selected_route.route_name,
+        "lodge": selected_route.lodge,
+        "route_area": selected_route.route_area,
+        "tour_startdate": selected_route.tour_startdate,
+        "tour_enddate": selected_route.tour_enddate,
+        "group_id": selected_route.group_id,
+        "tour_info_list": tour_info_list
+    }
 
     return result

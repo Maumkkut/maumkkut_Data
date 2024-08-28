@@ -92,6 +92,7 @@ BASE_URL = 'https://apis.data.go.kr/B551011/KorService1/areaBasedList1'
 #############################################################################
 @api_view(['GET'])
 def save_random_route(request, areacode, route_pk, tour_type):
+
     return JsonResponse({'result': random_route(areacode, route_pk, tour_type)})
 
 ##################################################################################################
@@ -100,6 +101,7 @@ def save_random_route(request, areacode, route_pk, tour_type):
 
 @api_view(['GET'])
 def get_tours_by_area(request, areacode):
+    print(print(recommend_similar_group_view(5,"강릉")))
     return JsonResponse({'result': random_area(areacode)})
 
 @api_view(['GET'])
